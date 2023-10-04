@@ -6,12 +6,6 @@ namespace BinanceAPI_MVC.Logical
     {
         Task<HttpResultModel<List<RspModel>>> Get(FrontFilterModel reqObj);
 
-        /// <summary> 取得交易對及24小時交易量 </summary>
-        Task<List<DayTradingVolume>> GetDayTradingVolume();
-
-        /// <summary> 取得K線 </summary>
-        Task<List<KLineModel>> GetKLines(List<DayTradingVolume> ObjList, string TimeInterval);
-
         /// <summary> 計算均價 </summary>
         List<AveragePriceModel> CaleAveragePrice(List<KLineModel> KlinesParamList, int MAParam);
 

@@ -7,6 +7,8 @@ builder.Services.AddControllersWithViews();
 
 //ª`¤JDI
 builder.Services.AddScoped<IFilterParam, FilterParam>();
+builder.Services.AddSingleton<ICallAPI, CallAPI>();
+
 
 var app = builder.Build();
 

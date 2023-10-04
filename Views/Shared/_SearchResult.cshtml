@@ -1,0 +1,15 @@
+﻿@{
+    var ResultList = ViewBag.List as List<BinanceAPI_MVC.Models.RspModel>;
+
+    @if (ResultList != null)
+    {
+        <h2>篩選結果:(@ResultList.Count 筆)</h2>
+        <li>執行時間：@ViewBag.SpendTime</li>
+        <ul>
+            @foreach (var value in ResultList)
+            {
+                <li>幣別：@value.Symbol －成交量: @value.Volume</li>
+            }
+        </ul>
+    }
+}

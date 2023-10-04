@@ -1,7 +1,5 @@
 ﻿using BinanceAPI_MVC.Models;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System;
 
 namespace BinanceAPI_MVC.Logical
 {
@@ -9,10 +7,11 @@ namespace BinanceAPI_MVC.Logical
     {
         private readonly string BaseUrl = "https://fapi.binance.com/fapi/v1";
         private static readonly HttpClient client = new HttpClient();
+        public ICallAPI callAPI;
 
-        public FilterParam()
+        public FilterParam(ICallAPI callAPI)
         {
-
+            this.callAPI = callAPI;
         }
 
         public async Task<HttpResultModel<List<RspModel>>> Get(FrontFilterModel reqObj)
@@ -23,7 +22,7 @@ namespace BinanceAPI_MVC.Logical
             rspObj.Message = HttpCode.Fail.ToString();
 
             //取得交易對及24小時交易量
-            var DayTradingVolumeList = await GetDayTradingVolume();
+            var DayTradingVolumeList = await callAPI.GetDayTradingVolume();
 
             List<FilterResultModel> result;
             List<FilterResultModel> resultA;
@@ -166,11 +165,11 @@ namespace BinanceAPI_MVC.Logical
 
             if (filterResultModels == null)
             {
-                KlinesParamList = await GetKLines(ObjList.DayTradingVolumesList, ObjList.TimeInterval);
+                KlinesParamList = await callAPI.GetKLines(ObjList.DayTradingVolumesList, ObjList.TimeInterval);
             }
             else
             {
-                KlinesParamList = await GetKLines(filterResultModels.Select(x => new DayTradingVolume
+                KlinesParamList = await callAPI.GetKLines(filterResultModels.Select(x => new DayTradingVolume
                 {
                     Symbol = x.Symbol,
                 }).ToList(), ObjList.TimeInterval);
@@ -203,73 +202,6 @@ namespace BinanceAPI_MVC.Logical
             }).ToList();
 
             return result;
-        }
-
-        /// <summary> 取得交易對及24小時交易量 </summary>
-        public async Task<List<DayTradingVolume>> GetDayTradingVolume()
-        {
-            List<DayTradingVolume> repObj = new List<DayTradingVolume>();
-
-            using (HttpClient client = new HttpClient())
-            {
-                try
-                {
-                    // API 的 URL
-                    string apiUrl = BaseUrl + "/ticker/24hr";
-
-                    // 發送 GET 請求
-                    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                    // 檢查回應的狀態碼
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // 讀取回應內容
-                        string Result = await response.Content.ReadAsStringAsync();
-                        repObj = JsonConvert.DeserializeObject<List<DayTradingVolume>>(Result).OrderByDescending(x => x.QuoteVolume).ToList();
-                    }
-                }
-                catch (Exception ex)
-                {
-                }
-            }
-
-            return repObj;
-        }
-
-        /// <summary> 取得K線 </summary>
-        public async Task<List<KLineModel>> GetKLines(List<DayTradingVolume> ObjList, string TimeInterval)
-        {
-            List<KLineModel> repObj = new List<KLineModel>();
-
-            var tasks = ObjList.Select(async obj =>
-            {
-                string url = BaseUrl + $@"/klines?symbol={obj.Symbol}&interval={TimeInterval}&limit=365";
-
-                HttpResponseMessage response = await client.GetAsync(url);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string Result = await response.Content.ReadAsStringAsync();
-                    List<List<object>> data = JsonConvert.DeserializeObject<List<List<object>>>(Result);
-
-                    foreach (var item in data)
-                    {
-                        KLineModel klineData = new KLineModel
-                        {
-                            Symbol = obj.Symbol,
-                            ClosePrice = Convert.ToDecimal(item[4]),
-                            Volume = Convert.ToDecimal(item[5]),
-                        };
-
-                        repObj.Add(klineData);
-                    }
-                }
-            }).ToList();
-
-            // 等待所有非同步任務完成
-            await Task.WhenAll(tasks);
-
-            return repObj;
         }
 
         /// <summary> 計算均價 </summary>

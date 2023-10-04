@@ -44,7 +44,7 @@ namespace BinanceAPI_MVC.Controllers
                 ViewBag.SpendTime = elapsedTime;
             }
 
-            return View("Index");
+            return PartialView("_SearchResult");
         }
     }
 }
