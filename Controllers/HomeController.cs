@@ -21,22 +21,30 @@ namespace BinanceAPI_MVC.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Search(FrontFilterModel reqObj)
         {
-            return View();
-        }
+            //計算程式執行時間
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        public async Task Search(FrontFilterModel reqObj)
-        {
             var rspObj = await _filterParam.Get(reqObj);
+            var temp = rspObj.Data;
 
+            //停止計時
+            stopwatch.Stop();
 
+            TimeSpan ts = stopwatch.Elapsed;
+
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                                    ts.Hours, ts.Minutes, ts.Seconds,ts.Milliseconds / 10);
+
+            if (rspObj.Success)
+            {
+                ViewBag.List = temp;
+                ViewBag.SpendTime = elapsedTime;
+            }
+
+            return View("Index");
         }
     }
 }

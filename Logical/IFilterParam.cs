@@ -4,7 +4,7 @@ namespace BinanceAPI_MVC.Logical
 {
     public interface IFilterParam
     {
-        Task<HttpResultModel<List<FilterResultModel>>> Get(FrontFilterModel reqObj);
+        Task<HttpResultModel<List<RspModel>>> Get(FrontFilterModel reqObj);
 
         /// <summary> 取得交易對及24小時交易量 </summary>
         Task<List<DayTradingVolume>> GetDayTradingVolume();
@@ -17,5 +17,11 @@ namespace BinanceAPI_MVC.Logical
 
         /// <summary> 比對參數 </summary>
         List<AveragePriceModel> CompareAveragePrice(List<AveragePriceModel> AList, List<AveragePriceModel> BList, CompareModel compare);
+
+        /// <summary> 邏輯運算 </summary>
+        List<FilterResultModel> LogicOperation(LogicalModel logical, List<FilterResultModel> resultA, List<FilterResultModel> resultB);
+
+        /// <summary> 增加數字單位 </summary>
+        List<RspModel> ConvertToUnit(List<FilterResultModel> filterResultModel);
     }
 }
