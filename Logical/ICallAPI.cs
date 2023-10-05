@@ -8,6 +8,6 @@ namespace BinanceAPI_MVC.Logical
         Task<List<DayTradingVolume>> GetDayTradingVolume();
 
         /// <summary> 取得K線 </summary>
-        Task<List<KLineModel>> GetKLines(List<DayTradingVolume> ObjList, string TimeInterval);
+        Task<List<KLineModel>> GetKLines(List<DayTradingVolume>? ObjList, string TimeInterval);
     }
 }

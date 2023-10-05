@@ -22,7 +22,7 @@
         public decimal ClosePrice { get; set; }
 
         /// <summary> 成交量 </summary>
-        public decimal Volume { get; set; }
+        public decimal QuoteVolume { get; set; }
 
         ///// <summary> 收盤時間 </summary>
         //public decimal CloseTime { get; set; }

@@ -8,14 +8,9 @@ namespace BinanceAPI_MVC.Logical
     {
         private readonly string BaseUrl = "https://fapi.binance.com/fapi/v1";
         private static readonly HttpClient client = new HttpClient();
-        public DateTime UpdateTime;
+        public DateTime UpdateTime = DateTime.UtcNow;
         public List<DayTradingVolume> dayTradingVolumes = new List<DayTradingVolume>();
         public List<KLineModel> kLineModels = new List<KLineModel>();
-
-        public CallAPI()
-        {
-            UpdateTime = DateTime.UtcNow;
-        }
 
         /// <summary> 取得交易對及24小時交易量 </summary>
         public async Task<List<DayTradingVolume>> GetDayTradingVolume()
@@ -41,6 +36,8 @@ namespace BinanceAPI_MVC.Logical
                     string Result = await response.Content.ReadAsStringAsync();
                     dayTradingVolumes = JsonConvert.DeserializeObject<List<DayTradingVolume>>(Result).OrderByDescending(x => x.QuoteVolume).ToList();
                 }
+
+                UpdateTime = DateTime.UtcNow;
             }
 
             return dayTradingVolumes;
@@ -49,15 +46,14 @@ namespace BinanceAPI_MVC.Logical
         /// <summary> 取得K線 </summary>
         public async Task<List<KLineModel>> GetKLines(List<DayTradingVolume> ObjList, string TimeInterval)
         {
+            List<KLineModel> KLineList = new List<KLineModel>();
+
             //判斷是否需更新資料
             TimeSpan timeDifference = DateTime.UtcNow - UpdateTime;
 
-            if (kLineModels.Count == 0 || timeDifference >= TimeSpan.FromMinutes(1))
+            if (kLineModels.Count == 0 || timeDifference >= TimeSpan.FromMinutes(1) )
             {
-                if (kLineModels.Count != 0)
-                    kLineModels.Clear();
-
-                var tasks = ObjList.Select(async obj =>
+                var tasks = dayTradingVolumes.Select(async obj =>
                 {
                     string url = BaseUrl + $@"/klines?symbol={obj.Symbol}&interval={TimeInterval}&limit=365";
 
@@ -74,7 +70,7 @@ namespace BinanceAPI_MVC.Logical
                             {
                                 Symbol = obj.Symbol,
                                 ClosePrice = Convert.ToDecimal(item[4]),
-                                Volume = Convert.ToDecimal(item[5]),
+                                QuoteVolume = dayTradingVolumes.Where(x => x.Symbol == obj.Symbol).Select(x => x.QuoteVolume).FirstOrDefault(),
                             };
 
                             kLineModels.Add(klineData);
@@ -84,9 +80,26 @@ namespace BinanceAPI_MVC.Logical
 
                 // 等待所有非同步任務完成
                 await Task.WhenAll(tasks);
+
+                KLineList = kLineModels;
+                UpdateTime = DateTime.UtcNow;
+
             }
 
-            return kLineModels;
+            else if (ObjList == null)
+            {
+                KLineList = kLineModels;
+            }
+
+            else if (ObjList != null)
+            {
+                foreach(var obj in ObjList)
+                {
+                    KLineList.AddRange(kLineModels.Where(x => x.Symbol == obj.Symbol).ToList());
+                }
+            }
+
+            return KLineList;
         }
     }
 }

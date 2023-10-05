@@ -8,5 +8,6 @@
 
         /// <summary> 交易量 </summary>
         public decimal QuoteVolume { get; set; }
+
     }
 }

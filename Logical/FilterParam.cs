@@ -1,12 +1,11 @@
 ﻿using BinanceAPI_MVC.Models;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace BinanceAPI_MVC.Logical
 {
     public class FilterParam : IFilterParam
     {
-        private readonly string BaseUrl = "https://fapi.binance.com/fapi/v1";
-        private static readonly HttpClient client = new HttpClient();
         public ICallAPI callAPI;
 
         public FilterParam(ICallAPI callAPI)
@@ -165,7 +164,7 @@ namespace BinanceAPI_MVC.Logical
 
             if (filterResultModels == null)
             {
-                KlinesParamList = await callAPI.GetKLines(ObjList.DayTradingVolumesList, ObjList.TimeInterval);
+                KlinesParamList = await callAPI.GetKLines(null,ObjList.TimeInterval);
             }
             else
             {
@@ -221,7 +220,7 @@ namespace BinanceAPI_MVC.Logical
                 {
                     Symbol = value,
                     AveragePrice = Math.Round(KlinesParamList.Where(x => x.Symbol == value).Reverse().Take(MAParam).Sum(y => y.ClosePrice) / MAParam, 7),
-                    Volume = KlinesParamList.Where(x => x.Symbol == value).Select(x => x.Volume).FirstOrDefault(),
+                    Volume = KlinesParamList.Where(x => x.Symbol == value).Select(x => x.QuoteVolume).FirstOrDefault(),
                 });
             }
 
