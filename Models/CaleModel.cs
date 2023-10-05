@@ -6,10 +6,10 @@
         //public FrontFilterModel FrontFilterLIST { get; set; }
 
         /// <summary> 24小時交易量回傳值 </summary>
-        public List<DayTradingVolume> DayTradingVolumesList { get; set; }
+        //public List<DayTradingVolume> DayTradingVolumesList { get; set; }
 
         /// <summary> K線回傳值 </summary>
-        public List<KLineModel> KLineList { get; set; }
+        //public List<KLineModel> KLineList { get; set; }
 
         /// <summary> 時間週期 </summary>
         public string TimeInterval { get; set; }

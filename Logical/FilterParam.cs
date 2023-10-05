@@ -31,7 +31,6 @@ namespace BinanceAPI_MVC.Logical
 
             resultA = await CaleParam(new CaleModel
             {
-                DayTradingVolumesList = DayTradingVolumeList,
                 TimeInterval = reqObj.TimeInterval1,
                 Compare = reqObj.Compare11,
                 MAParam_A = (int)reqObj.MAParam11,
@@ -44,7 +43,6 @@ namespace BinanceAPI_MVC.Logical
             {
                 resultB = await CaleParam(new CaleModel
                 {
-                    DayTradingVolumesList = DayTradingVolumeList,
                     TimeInterval = reqObj.TimeInterval1,
                     Compare = reqObj.Compare12,
                     MAParam_A = (int)reqObj.MAParam13,
@@ -60,7 +58,6 @@ namespace BinanceAPI_MVC.Logical
             {
                 resultA = await CaleParam(new CaleModel
                 {
-                    DayTradingVolumesList = DayTradingVolumeList,
                     TimeInterval = reqObj.TimeInterval2,
                     Compare = reqObj.Compare21,
                     MAParam_A = (int)reqObj.MAParam21,
@@ -73,7 +70,6 @@ namespace BinanceAPI_MVC.Logical
                 {
                     resultB = await CaleParam(new CaleModel
                     {
-                        DayTradingVolumesList = DayTradingVolumeList,
                         TimeInterval = reqObj.TimeInterval2,
                         Compare = reqObj.Compare22,
                         MAParam_A = (int)reqObj.MAParam23,
@@ -90,7 +86,6 @@ namespace BinanceAPI_MVC.Logical
             {
                 resultA = await CaleParam(new CaleModel
                 {
-                    DayTradingVolumesList = DayTradingVolumeList,
                     TimeInterval = reqObj.TimeInterval3,
                     Compare = reqObj.Compare31,
                     MAParam_A = (int)reqObj.MAParam31,
@@ -103,7 +98,6 @@ namespace BinanceAPI_MVC.Logical
                 {
                     resultB = await CaleParam(new CaleModel
                     {
-                        DayTradingVolumesList = DayTradingVolumeList,
                         TimeInterval = reqObj.TimeInterval3,
                         Compare = reqObj.Compare32,
                         MAParam_A = (int)reqObj.MAParam33,
@@ -120,7 +114,6 @@ namespace BinanceAPI_MVC.Logical
             {
                 resultA = await CaleParam(new CaleModel
                 {
-                    DayTradingVolumesList = DayTradingVolumeList,
                     TimeInterval = reqObj.TimeInterval4,
                     Compare = reqObj.Compare41,
                     MAParam_A = (int)reqObj.MAParam41,
@@ -133,7 +126,6 @@ namespace BinanceAPI_MVC.Logical
                 {
                     resultB = await CaleParam(new CaleModel
                     {
-                        DayTradingVolumesList = DayTradingVolumeList,
                         TimeInterval = reqObj.TimeInterval4,
                         Compare = reqObj.Compare42,
                         MAParam_A = (int)reqObj.MAParam43,
